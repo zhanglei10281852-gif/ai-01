@@ -131,7 +131,7 @@ func (s *AuthService) Logout(ctx context.Context, principal domain.Principal) er
 		return errors.New("session is required")
 	}
 	return s.store.WithTx(ctx, func(tx repository.Tx) error {
-		if err := tx.RevokeSession(ctx, principal.UserID, s.clock.Now()); err != nil {
+		if err := tx.RevokeSession(ctx, principal.SessionID, s.clock.Now()); err != nil {
 			return err
 		}
 		return s.audit.Record(ctx, tx, "user_logout", "user", principal.UserID, "success", nil)

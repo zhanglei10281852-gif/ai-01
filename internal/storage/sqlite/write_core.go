@@ -26,17 +26,17 @@ func (q *queries) InsertSession(ctx context.Context, session domain.Session) err
 	return translateError("insert session", err)
 }
 
-func (q *queries) RevokeSession(ctx context.Context, userID string, revokedAt time.Time) error {
-	result, err := q.q.ExecContext(ctx, `UPDATE sessions SET revoked_at = ? WHERE user_id = ? AND revoked_at IS NULL`, formatTime(revokedAt), userID)
+func (q *queries) RevokeSession(ctx context.Context, sessionID string, revokedAt time.Time) error {
+	result, err := q.q.ExecContext(ctx, `UPDATE sessions SET revoked_at = ? WHERE id = ? AND revoked_at IS NULL`, formatTime(revokedAt), sessionID)
 	if err != nil {
-		return translateError("revoke user sessions", err)
+		return translateError("revoke session", err)
 	}
 	rows, err := result.RowsAffected()
 	if err != nil {
-		return fmt.Errorf("revoke user sessions rows affected: %w", err)
+		return fmt.Errorf("revoke session rows affected: %w", err)
 	}
 	if rows == 0 {
-		return fmt.Errorf("revoke user sessions: %w", domain.ErrNotFound)
+		return fmt.Errorf("revoke session: %w", domain.ErrNotFound)
 	}
 	return nil
 }
